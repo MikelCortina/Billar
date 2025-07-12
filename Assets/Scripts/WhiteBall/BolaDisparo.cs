@@ -11,9 +11,19 @@ public class BolaDisparo : MonoBehaviour
 
     public bool IsAiming { get; private set; } = false;
 
+    private GameManager gameManager;
+
+
     void Start()
     {
         bola = GetComponent<BolaFisica>();
+        gameManager = GameManager.Instance;
+
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager no encontrado");
+        }
+
     }
 
     void Update()
@@ -56,6 +66,11 @@ public class BolaDisparo : MonoBehaviour
             float distancia = Vector2.Distance(bolaPos, mouseReleasePos);
 
             bola.AplicarVelocidad(direccion * distancia * fuerzaDisparo);
+
+            gameManager.tirosRestantes--;   
+
+            Debug.Log(gameManager.tirosRestantes + " tiros restantes.");
+
         }
     }
 }

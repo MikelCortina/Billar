@@ -7,6 +7,8 @@ TagManager:
   - Bola
   - BolaBlanca
   - Banda
+  - Panel1
+  - Panel2
   layers:
   - Default
   - TransparentFX
@@ -14,7 +16,7 @@ TagManager:
   - Bolas
   - Water
   - UI
-  - Paredes
+  - Banda
   - 
   - 
   - 

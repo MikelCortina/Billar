@@ -6,6 +6,7 @@ public class BolaDisparoPreview : MonoBehaviour
     public float fuerzaDisparo = 10f;
     public float radioBola = 0.15f;
     public LayerMask capaBolas;
+    public LayerMask capaParedes; // NUEVO
 
     private BolaFisica bola;
     private Camera cam;
@@ -41,48 +42,66 @@ public class BolaDisparoPreview : MonoBehaviour
         float distancia = Vector2.Distance(transform.position, mouseWorld);
         Vector2 velocidadInicial = direccion * distancia * fuerzaDisparo;
 
-        // Raycast
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, radioBola, direccion, 10f, capaBolas);
+        Vector2 origen = transform.position;
 
-        if (hit.collider != null && hit.collider.gameObject != gameObject)
+        // Primero comprobamos colisión con bola
+        RaycastHit2D hitBola = Physics2D.CircleCast(origen, radioBola, direccion, 10f, capaBolas);
+
+        if (hitBola.collider != null && hitBola.collider.gameObject != gameObject)
         {
-            Transform bolaObjetivo = hit.collider.transform;
-            Vector2 puntoImpacto = hit.point;
+            Transform bolaObjetivo = hitBola.collider.transform;
+            Vector2 puntoImpacto = hitBola.point;
 
-            // Normal del impacto: desde punto de impacto hacia centro de la otra bola
             Vector2 normal = ((Vector2)bolaObjetivo.position - puntoImpacto).normalized;
-
-            // Tangente perpendicular
             Vector2 tangente = new Vector2(-normal.y, normal.x);
 
-            // Proyecciones de velocidad
             float v1n = Vector2.Dot(velocidadInicial, normal);
             float v1t = Vector2.Dot(velocidadInicial, tangente);
 
-            // Resultado final de velocidades (masa igual, bola objetivo en reposo)
-            Vector2 velBlancaPost = v1t * tangente;      // La blanca se desliza tangencialmente
-            Vector2 velObjetivoPost = v1n * normal;       // La objetivo va en la normal
+            Vector2 velBlancaPost = v1t * tangente;
+            Vector2 velObjetivoPost = v1n * normal;
 
-            // Coordenadas para mostrar
             Vector2 postGolpeBlanca = puntoImpacto + velBlancaPost.normalized * 1.5f;
             Vector2 postGolpeObjetivo = (Vector2)bolaObjetivo.position + velObjetivoPost.normalized * 1.5f;
 
             lineRenderer.positionCount = 6;
-            lineRenderer.SetPosition(0, transform.position);        // Desde blanca
-            lineRenderer.SetPosition(1, puntoImpacto);              // Hasta impacto
+            lineRenderer.SetPosition(0, origen);
+            lineRenderer.SetPosition(1, puntoImpacto);
 
-            lineRenderer.SetPosition(2, puntoImpacto);              // Desde punto de impacto
-            lineRenderer.SetPosition(3, postGolpeBlanca);           // Dirección post-impacto blanca
+            lineRenderer.SetPosition(2, puntoImpacto);
+            lineRenderer.SetPosition(3, postGolpeBlanca);
 
-            lineRenderer.SetPosition(4, bolaObjetivo.position);     // Desde objetivo
-            lineRenderer.SetPosition(5, postGolpeObjetivo);         // Dirección objetivo
+            lineRenderer.SetPosition(4, bolaObjetivo.position);
+            lineRenderer.SetPosition(5, postGolpeObjetivo);
         }
         else
         {
-            // Línea recta si no colisiona
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, transform.position);
-            lineRenderer.SetPosition(1, (Vector2)transform.position + direccion * 5f);
+            // Si no choca con bola, buscamos colisión con pared
+            RaycastHit2D hitPared = Physics2D.CircleCast(origen, radioBola, direccion, 10f, capaParedes);
+
+            if (hitPared.collider != null)
+            {
+                Vector2 puntoImpacto = hitPared.point;
+                Vector2 normal = hitPared.normal;
+
+                // Reflexión: R = D - 2(D·N)N
+                Vector2 direccionRebote = Vector2.Reflect(direccion, normal);
+
+                Vector2 puntoDespuesRebote = puntoImpacto + direccionRebote.normalized * 3f;
+
+                lineRenderer.positionCount = 3;
+                lineRenderer.SetPosition(0, origen);
+                lineRenderer.SetPosition(1, puntoImpacto);
+                lineRenderer.SetPosition(2, puntoDespuesRebote);
+            }
+            else
+            {
+                // Línea recta si no colisiona con nada
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, origen);
+                lineRenderer.SetPosition(1, origen + direccion * 5f);
+            }
         }
     }
 }
+

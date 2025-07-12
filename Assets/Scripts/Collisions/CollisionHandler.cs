@@ -1,23 +1,38 @@
 using UnityEngine;
 
+[RequireComponent(typeof(BolaFisica))]
 public class BolaCollisionHandler : MonoBehaviour
 {
     private BolaFisica bola;
 
+    public System.Action OnBandaRebote;
+    public System.Action<GameObject> OnColisionConOtraBola;
+
+    private ContadorRebotesAntesDeBlanca contadorRebotesAntesDeBlanca;
+
+    private Vector2 posicionAnterior;
+
     void Start()
     {
+        contadorRebotesAntesDeBlanca = GetComponent<ContadorRebotesAntesDeBlanca>();
+        if (contadorRebotesAntesDeBlanca == null)
+        {
+            Debug.LogError("ContadorRebotesAntesDeBlanca no encontrado en " + gameObject.name);
+        }   
+
         bola = GetComponent<BolaFisica>();
         if (bola == null)
         {
             Debug.LogError("BolaFisica no encontrado en " + gameObject.name);
         }
+        posicionAnterior = bola.transform.position;
     }
 
     void FixedUpdate()
     {
         if (bola == null) return;
 
-        // --- Colisiones con otras bolas ---
+        // Colisión con otras bolas
         foreach (var otraBola in FindObjectsOfType<BolaFisica>())
         {
             if (otraBola == bola) continue;
@@ -27,6 +42,9 @@ public class BolaCollisionHandler : MonoBehaviour
                 otraBola.transform.position, otraBola.radio,
                 out Vector2 contactDirection, out float contactMagnitude, out Vector2 contactPoint))
             {
+                OnColisionConOtraBola?.Invoke(otraBola.gameObject);
+
+                // Resolución física
                 Vector2 pos1 = bola.transform.position;
                 Vector2 pos2 = otraBola.transform.position;
 
@@ -51,7 +69,6 @@ public class BolaCollisionHandler : MonoBehaviour
 
                 float overlap = bola.radio + otraBola.radio - Vector2.Distance(pos1, pos2);
 
-                // Reproducir sonido de colisión proporcional a la media de las velocidades
                 float velocidadMedia = (v1.magnitude + v2.magnitude) / 2f;
 
                 var sonido1 = bola.GetComponent<BolaSonidoColision>();
@@ -66,29 +83,41 @@ public class BolaCollisionHandler : MonoBehaviour
                     bola.transform.position -= (Vector3)separation;
                     otraBola.transform.position += (Vector3)separation;
                 }
+
+                Debug.Log("Colision");
+                contadorRebotesAntesDeBlanca?.VerificarBolaBlanca(otraBola.gameObject);
             }
+            
         }
 
-        // --- Colisiones con obstáculos tipo AABB ---
+        // Colisión con bandas
         foreach (var obstaculo in GameObject.FindGameObjectsWithTag("Banda"))
         {
             BoxCollider2D box = obstaculo.GetComponent<BoxCollider2D>();
             if (box == null) continue;
 
-            Vector2 aabbCenter = box.bounds.center;
-            Vector2 halfSize = box.bounds.extents;
+            RaycastHit2D hit = Physics2D.CircleCast(
+                posicionAnterior,
+                bola.radio,
+                bola.transform.position - (Vector3)posicionAnterior,
+                Vector2.Distance(posicionAnterior, bola.transform.position),
+                LayerMask.GetMask("Banda") // Asegúrate de que las bandas estén en esta capa
+            );
 
-            if (CollisionFunctions.CircleToAABBResolution(
-                bola.transform.position, bola.radio,
-                aabbCenter, halfSize,
-                out Vector2 contactDir, out float contactMag, out Vector2 contactPoint))
+            if (hit.collider != null)
             {
-                // Separar bola fuera del rectángulo
-                bola.transform.position += (Vector3)(contactDir * (contactMag + 0.001f));
+                Vector2 contactDir = hit.normal;
+                Vector2 puntoColision = hit.point;
 
-                // Reflejar la velocidad
-                bola.velocidad = Vector2.Reflect(bola.velocidad, contactDir) * 0.95f; // 0.95 para simular pérdida de energía
+                OnBandaRebote?.Invoke();
+
+                // Rebote
+                bola.transform.position = puntoColision + contactDir * (bola.radio + 0.001f);
+                bola.velocidad = Vector2.Reflect(bola.velocidad, contactDir) * 0.95f;
+
+                contadorRebotesAntesDeBlanca?.ContarRebote();
             }
         }
+        posicionAnterior = bola.transform.position;
     }
 }
