@@ -1,54 +1,73 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public int tirosRestantes = 3; // Número de tiros restantes
+    [Header("Valores actuales")]
+    public int tirosRestantes = 3;
+    public int puntosJugador = 0;
+    public int puntosRequeridos = 3;
 
-    public int puntosRequeridos = 6; // Puntos necesarios para ganar
+    [Header("Valores iniciales")]
+    public int tirosRestantesInicio = 3;
+    public int puntosJugadorInicio = 0;
+    public int puntosRequeridosInicio = 3;
 
-    public int puntosJugador = 0; // Puntos del jugador actual
+    public ButtonManager buttonManager;
 
-    private ButtonManager buttonManager; // Referencia al ButtonManager
-
-    private bool escenaRecargando = false; // Indica si la escena se está recargando
-
-
-    void Awake()
+    private void Awake()
     {
-        buttonManager = GetComponent<ButtonManager>();
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); // o Debug.LogWarning si prefieres mantenerlo
+            Destroy(gameObject);
             return;
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject); // opcional, si quieres que persista entre escenas
+        DontDestroyOnLoad(gameObject); // Mantiene el GameManager entre escenas si llegas a usar más
+
+        buttonManager = GetComponent<ButtonManager>();
+        ReiniciarEstado(); // Establece estado inicial
     }
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Update()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (escenaRecargando) return;
-
         if (tirosRestantes < 0)
         {
-            escenaRecargando = true;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            // Jugador perdió, reiniciar ronda (no escena)
+            ReiniciarRonda();
         }
+
         if (puntosJugador >= puntosRequeridos)
         {
-            buttonManager.MostrarPanel1(); // Muestra el panel de victoria  
+            buttonManager.MostrarPanel1(); // Panel de victoria
+            puntosJugador = 0;
         }
+    }
+
+    public void ReiniciarEstado()
+    {
+        puntosJugador = puntosJugadorInicio;
+        tirosRestantes = tirosRestantesInicio;
+        puntosRequeridos = puntosRequeridosInicio;
+    }
+
+    public void ReiniciarRonda()
+    {
+        puntosJugador = puntosJugadorInicio;
+        tirosRestantes = tirosRestantesInicio;
+
+        buttonManager.ReiniciarPosiciones();
+        
+    }
+
+    public void SiguienteNivel()
+    {
+        puntosJugador = 0;
+        tirosRestantes = tirosRestantesInicio;
+        puntosRequeridos += 2;
+
+        buttonManager.ReiniciarPosiciones();
     }
 }
