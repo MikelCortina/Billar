@@ -2939,7 +2939,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tirosRestantes: 3
   puntosJugador: 0
-  puntosRequeridos: 3
+  puntosRequeridos: 10000
   tirosRestantesInicio: 3
   puntosJugadorInicio: 0
   puntosRequeridosInicio: 3
@@ -2983,8 +2983,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091704c3ce99a4b49892ecbb338534aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jokersInicioRonda: []
-  jokersFinalRonda: []
+  jokersInicioRonda:
+  - {fileID: 11400000, guid: a6df61da7cc161d47a69446ec394b3e9, type: 2}
+  jokersFinalRonda:
+  - {fileID: 11400000, guid: 39b66639299679e4a8f16977a081e19c, type: 2}
+  - {fileID: 11400000, guid: f89ffbaa6ce1b4146ae3315792ec6a88, type: 2}
 --- !u!1 &1537331938
 GameObject:
   m_ObjectHideFlags: 0

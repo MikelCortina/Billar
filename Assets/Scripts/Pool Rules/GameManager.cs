@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
         }
         AplicarJokersFinalTurno(); // Aplica jokers que tengan efecto al final del turno
 
-        //Debug.Log("Puntos totales del turno: " + puntosJugador);
+        Debug.Log("Puntos totales del turno: " + puntosJugador);
     }
 
     // Llama al reset de cada bola y prepara para un nuevo turno

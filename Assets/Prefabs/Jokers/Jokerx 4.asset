@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bed688ad30de6134186c6c7278654dde, type: 3}
-  m_Name: Mukti
+  m_Script: {fileID: 11500000, guid: e2f16d07a9a160e43848106b588ac40b, type: 3}
+  m_Name: Jokerx 4
   m_EditorClassIdentifier: 
   nombre: 
   descripcion: 

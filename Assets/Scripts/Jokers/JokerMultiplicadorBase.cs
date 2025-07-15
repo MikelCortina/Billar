@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Jokers/Joker Multi Rebotes")]
+
 public class JokerMultiRebotes : Joker
 {
     public override void AplicarEfecto(GameManager gameManager)
