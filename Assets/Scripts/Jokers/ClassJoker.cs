@@ -7,4 +7,5 @@ public abstract class Joker : ScriptableObject
     public Sprite icono;
 
     public abstract void AplicarEfecto(GameManager gameManager);
+   
 }
