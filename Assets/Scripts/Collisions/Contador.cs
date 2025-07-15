@@ -8,7 +8,7 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
     public string tagBolaBlanca = "BolaBlanca"; // El tag que identifica a la bola blanca (para detección de colisión)
 
     // Cantidad de rebotes antes de tocar la bola blanca
-    public int rebotes { get; private set; } = 0;
+    public int rebotes { get; set; } = 0;
 
     // True si la bola ha tocado la blanca (solo se marca una vez)
     public bool haTocadoBlanca { get; private set; } = false;
@@ -18,6 +18,7 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
 
     private BolaFisica bolaFisica; // Referencia al script que controla el movimiento de esta bola
 
+  
     // Se ejecuta al iniciar el juego o al activarse el objeto
     void Start()
     {
@@ -37,7 +38,15 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
     {
         // Si la bola empieza a moverse por primera vez, se marca como lanzada
         if (bolaFisica.EstaEnMovimiento && !haSidoLanzada)
+        {
             haSidoLanzada = true;
+           
+        }
+        if (bolaFisica.EstaEnMovimiento)
+        {
+            Debug.Log("Rebotes:" + rebotes);
+        }
+      
     }
 
     // Llamado desde otro script (como BolaCollisionHandler) cuando se detecta un rebote
@@ -69,4 +78,6 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
         haTocadoBlanca = false;
         haSidoLanzada = false;
     }
+
+   
 }

@@ -147,12 +147,17 @@ public class GameManager : MonoBehaviour
         {
             if (bola.haTocadoBlanca)
             {       
-                puntosJugador += bola.rebotes;
+                puntosJugador += bola.rebotes*1;
             }
+            else
+            {
+                puntosJugador += bola.rebotes * 0;
+            }
+           
         }
         AplicarJokersFinalTurno(); // Aplica jokers que tengan efecto al final del turno
 
-        Debug.Log("Puntos totales del turno: " + puntosJugador);
+        //Debug.Log("Puntos totales del turno: " + puntosJugador);
     }
 
     // Llama al reset de cada bola y prepara para un nuevo turno

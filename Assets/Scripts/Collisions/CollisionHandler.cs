@@ -115,9 +115,15 @@ public class BolaCollisionHandler : MonoBehaviour
                 bola.transform.position = puntoColision + contactDir * (bola.radio + 0.001f);
                 bola.velocidad = Vector2.Reflect(bola.velocidad, contactDir) * 0.95f;
 
-                contadorRebotesAntesDeBlanca?.ContarRebote();
+                var banda = hit.collider.GetComponent<BandaEfecto>();
+                if (banda != null && contadorRebotesAntesDeBlanca != null)
+                {
+                    Debug.Log($"Colisión con banda: {banda.GetType().Name}");
+                    banda.AplicarEfecto(contadorRebotesAntesDeBlanca);
+                }
             }
         }
+       
         posicionAnterior = bola.transform.position;
     }
 

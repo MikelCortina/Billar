@@ -9,6 +9,7 @@ TagManager:
   - Banda
   - Panel1
   - Panel2
+  - BandaMultiplicadora
   layers:
   - Default
   - TransparentFX
