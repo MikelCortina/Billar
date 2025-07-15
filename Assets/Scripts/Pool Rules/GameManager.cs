@@ -70,4 +70,20 @@ public class GameManager : MonoBehaviour
 
         buttonManager.ReiniciarPosiciones();
     }
+
+    public void AddTiros(int cantidad)
+    {
+        tirosRestantes += cantidad;
+        
+    }
+
+    public void MultiplicarPuntaje(float factor)
+    {
+        puntosJugador = Mathf.RoundToInt(puntosJugador * factor);
+    }
+
+    public void AplicarJokers()
+    {
+        GetComponent<JokerManager>().ActivarJokers(this);
+    }
 }

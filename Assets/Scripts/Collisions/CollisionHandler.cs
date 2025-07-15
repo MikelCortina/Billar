@@ -120,4 +120,5 @@ public class BolaCollisionHandler : MonoBehaviour
         }
         posicionAnterior = bola.transform.position;
     }
+
 }

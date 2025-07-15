@@ -68,7 +68,7 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
             haTocadoBlanca = true;
             Debug.Log($"{gameObject.name} ha tocado la bola blanca tras {rebotes} rebotes.");
 
-            gameManager.puntosJugador += rebotes; // Añadir puntos al jugador
+            CalcularPuntos(haTocadoBlanca); // Calcular puntos al tocar la bola blanca
             Debug.Log($"Puntos del jugador: {gameManager.puntosJugador}");
         }
     }
@@ -85,5 +85,19 @@ public class ContadorRebotesAntesDeBlanca : MonoBehaviour
         rebotes = 0;
         haTocadoBlanca = false;
         haSidoLanzada = false;
+    }
+
+    public void CalcularPuntos(bool tocaBolaBlanca)
+    {
+
+        if (tocaBolaBlanca)
+        {
+            gameManager.puntosJugador += rebotes; // Añadir puntos al jugador
+        }
+        if (!tocaBolaBlanca)
+        {
+            gameManager.puntosJugador += rebotes*0; // Añadir puntos al jugador
+        }
+      
     }
 }
