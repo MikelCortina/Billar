@@ -108,7 +108,8 @@ public class GameManager : MonoBehaviour
     // Aumenta la cantidad de tiros disponibles (ej: por un joker)
     public void AddTiros(int cantidad)
     {
-        tirosRestantes += cantidad;
+        tirosRestantes++;
+        Debug.Log("Tiro sumado. Total: ");
     }
 
     // Multiplica el puntaje actual por un factor (ej: x2 por un joker)

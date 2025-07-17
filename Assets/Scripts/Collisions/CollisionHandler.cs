@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(BolaFisica))]
 public class BolaCollisionHandler : MonoBehaviour
 {
+    public GameObject bola1;
     private BolaFisica bola;
 
     public System.Action OnBandaRebote;
@@ -115,11 +116,12 @@ public class BolaCollisionHandler : MonoBehaviour
                 bola.transform.position = puntoColision + contactDir * (bola.radio + 0.001f);
                 bola.velocidad = Vector2.Reflect(bola.velocidad, contactDir) * 0.95f;
 
-                var banda = hit.collider.GetComponent<BandaEfecto>();
+                var banda = hit.collider.GetComponent<Banda>();
                 if (banda != null && contadorRebotesAntesDeBlanca != null)
                 {
                     Debug.Log($"Colisión con banda: {banda.GetType().Name}");
-                    banda.AplicarEfecto(contadorRebotesAntesDeBlanca);
+                    banda.AplicarComodines(bola1);
+                    banda.SumarPuntos(contadorRebotesAntesDeBlanca);
                 }
             }
         }
