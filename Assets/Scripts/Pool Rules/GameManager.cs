@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
         if (puntosJugador >= puntosRequeridos)
         {
             buttonManager.MostrarPanel1(); // Por ejemplo, panel de victoria
+            Debug.Log("¡Has ganado esta ronda! Puntos totales: " + puntosJugador);
             puntosJugador = 0; // Se puede reiniciar aquí o más tarde según el flujo
         }
     }
@@ -158,7 +159,7 @@ public class GameManager : MonoBehaviour
         }
         AplicarJokersFinalTurno(); // Aplica jokers que tengan efecto al final del turno
 
-        Debug.Log("Puntos totales del turno: " + puntosJugador);
+       
     }
 
     // Llama al reset de cada bola y prepara para un nuevo turno
@@ -168,6 +169,7 @@ public class GameManager : MonoBehaviour
             bola.Resetear();
 
         puntosCalculados = false; // Permite calcular puntos de nuevo cuando todas las bolas se detengan
+        Debug.Log("Puntos totales del turno: " + puntosJugador);
     }
 
     public ContadorRebotesAntesDeBlanca[] ObtenerTodasLasBolas()

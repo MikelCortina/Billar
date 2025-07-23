@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CPuntosExtra : Comodin
 {
-    public int puntosExtra = 50;
+    public int puntosExtra = 1;
 
     public override void Aplicar(GameObject bola)
     {
