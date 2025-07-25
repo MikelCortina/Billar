@@ -6,6 +6,8 @@ public class BolaCollisionHandler : MonoBehaviour
     public GameObject bola1;
     private BolaFisica bola;
 
+    public GameObject floatingPointsPrefab;
+
     public System.Action OnBandaRebote;
     public System.Action<GameObject> OnColisionConOtraBola;
 
@@ -116,6 +118,17 @@ public class BolaCollisionHandler : MonoBehaviour
                 bola.transform.position = puntoColision + contactDir * (bola.radio + 0.001f);
                 bola.velocidad = Vector2.Reflect(bola.velocidad, contactDir) * 0.95f;
 
+                // Instanciar puntos flotantes
+                if (floatingPointsPrefab != null)
+                {
+                    GameObject puntos = Instantiate(floatingPointsPrefab, puntoColision, Quaternion.identity);
+                    var script = puntos.GetComponent<FloatingPoints>();
+                    if (script != null)
+                    {
+                        script.Initialize(10); // o la puntuación correspondiente
+                    }
+                }
+
                 var banda = hit.collider.GetComponent<Banda>();
                 if (banda != null && contadorRebotesAntesDeBlanca != null)
                 {
@@ -124,8 +137,9 @@ public class BolaCollisionHandler : MonoBehaviour
                     banda.SumarPuntos(contadorRebotesAntesDeBlanca);
                 }
             }
+
         }
-       
+
         posicionAnterior = bola.transform.position;
     }
 

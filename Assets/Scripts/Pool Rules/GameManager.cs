@@ -21,7 +21,9 @@ public class GameManager : MonoBehaviour
 
     private ContadorRebotesAntesDeBlanca[] bolas; // Todas las bolas en escena que vamos a evaluar
     private bool puntosCalculados = true;        // Evita calcular los puntos varias veces por turno
-    
+
+    public UIManager uiManager;
+
 
     // Se ejecuta antes del Start
     private void Awake()
@@ -44,6 +46,8 @@ public class GameManager : MonoBehaviour
         jokerManager = GetComponent<JokerManager>();
 
         ReiniciarEstado(); // Inicializa los valores del juego
+
+        ActualizarUI();
     }
 
     // Se ejecuta cada frame
@@ -75,6 +79,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("¡Has ganado esta ronda! Puntos totales: " + puntosJugador);
             puntosJugador = 0; // Se puede reiniciar aquí o más tarde según el flujo
         }
+
+        ActualizarUI();
     }
 
     // Reinicia los valores base al comenzar una nueva partida completa
@@ -175,6 +181,18 @@ public class GameManager : MonoBehaviour
     public ContadorRebotesAntesDeBlanca[] ObtenerTodasLasBolas()
     {
         return bolas;
+    }
+
+    void ActualizarUI()
+    {
+        uiManager.puntosMeta = puntosRequeridos;
+        uiManager.puntosAcumulados = puntosJugador;
+        //uiManager.puntosTurno = puntosTurno; falta
+        uiManager.tirosRestantes = tirosRestantes;
+        //uiManager.rondaActual = rondaActual; falta
+        //uiManager.oro = oro; falta
+
+        uiManager.ActualizarHUD();
     }
 
 }
